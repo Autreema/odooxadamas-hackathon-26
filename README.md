@@ -1,140 +1,341 @@
-<h1 align="center"> <img width="35" height="35" alt="Motion logo" src="https://github.com/user-attachments/assets/00d6d1c3-72c4-4c2f-a664-69da13182ffc" /><br />Motion</h1>
-<h3 align="center">
-  An open source animation library<br />for JavaScript, React and Vue
-</h3>
+# Human Resource Management System (HRMS)
 
-<p align="center">
-  <a href="https://www.npmjs.com/package/motion" rel="noopener noreferrer nofollow" ><img src="https://img.shields.io/npm/v/motion?color=0368FF&label=version" alt="npm version"></a>
-  <a href="https://www.npmjs.com/package/motion" rel="noopener noreferrer nofollow" ><img src="https://img.shields.io/npm/dm/framer-motion?color=8D30FF&label=npm" alt="npm downloads per month"></a>
-  <a target="_blank" rel="noopener noreferrer nofollow" href="https://www.jsdelivr.com/package/npm/motion"><img alt="jsDelivr hits (npm)" src="https://img.shields.io/jsdelivr/npm/hm/framer-motion?logo=jsdeliver&color=FF4FBA"></a>
-  <img alt="NPM License" src="https://img.shields.io/npm/l/motion?color=FF2B6E">
-</p>
+
+
+# Project Overview
+
+The Human Resource Management System (HRMS) is a web-based application developed to simplify and automate human resource operations within an organization. The system enables HR administrators and employees to efficiently manage employee information, attendance, leave requests, payroll, recruitment, and performance evaluation through a centralized platform.
+
+The application is designed with a modern and responsive user interface, providing an intuitive experience for both administrators and employees.
+
+---
+
+# Problem Statement
+
+Organizations often face difficulties in managing employee records manually, resulting in data redundancy, errors, and time-consuming administrative work.
+
+This project addresses these challenges by providing a centralized Human Resource Management System that automates HR activities and improves productivity.
+
+---
+
+# Objectives
+
+- Digitize employee management
+- Reduce manual paperwork
+- Improve HR efficiency
+- Maintain accurate employee records
+- Simplify leave and attendance management
+- Generate payroll automatically
+- Provide real-time HR analytics
+
+---
+
+# Features
+
+## Authentication
+- Secure Login
+- Role-Based Access
+- User Registration
+- Password Protection
+
+---
+
+## Employee Management
+
+- Add Employees
+- Update Employee Details
+- Delete Employee Records
+- Employee Directory
+- Employee Profiles
+
+---
+
+## Attendance Management
+
+- Daily Attendance
+- Check-In / Check-Out
+- Attendance Reports
+- Monthly Attendance Summary
+
+---
+
+## Leave Management
+
+- Apply Leave
+- Approve/Reject Leave
+- Leave Balance Tracking
+- Leave History
+
+---
+
+## Payroll Management
+
+- Salary Details
+- Monthly Payroll
+- Salary Slip Generation
+- Payroll Reports
+
+---
+
+## Department Management
+
+- Create Departments
+- Assign Employees
+- Department Overview
+
+---
+
+## Recruitment
+
+- Job Openings
+- Candidate Details
+- Interview Tracking
+- Hiring Status
+
+---
+
+## Performance Management
+
+- Employee Performance
+- Performance Reviews
+- Ratings
+- Feedback
+
+---
+
+## Dashboard
+
+- Employee Statistics
+- Attendance Summary
+- Leave Statistics
+- Payroll Overview
+- Quick Navigation
+
+---
+
+# Technology Stack
+
+## Frontend
+
+- React
+- TypeScript
+- Vite
+- HTML5
+- CSS3
+- Tailwind CSS
+
+## Backend
+
+- Node.js
+- Express.js
+
+## Database
+
+- MongoDB
+
+## Version Control
+
+- Git
+- GitHub
+
+---
+
+# Project Structure
+
+```
+HRMS
+│
+├── src
+│   ├── components
+│   ├── pages
+│   ├── assets
+│   ├── hooks
+│   ├── services
+│   ├── context
+│   ├── styles
+│   └── utils
+│
+├── public
+│
+├── package.json
+├── vite.config.ts
+├── tsconfig.json
+└── README.md
+```
+
+---
+
+# Installation
+
+Clone the repository
 
 ```bash
-# React / JavaScript
-npm install motion
-
-# Vue
-npm install motion-v
+git clone https://github.com/Autreema/odooxadamas-hackathon-26.git
 ```
 
-## Table of Contents
+Navigate to the project
 
-1. [Why Motion?](#why-motion)
-2. [🍦 Platforms](#-platforms)
-3. [🎓 Examples](#-examples)
-4. [⚡️ Motion+](#-motion)
-5. [👩🏻‍⚖️ License](#-license)
-6. [💎 Contribute](#-contribute)
-7. [✨ Sponsors](#-sponsors)
-
-## Why Motion?
-
--   **Simple API:** First-class React, JavaScript, and Vue packages.
--   **Hybrid engine:** Power of JavaScript combined with native browser APIs for 120fps, GPU-accelerated animations.
--   **Production-ready:** TypeScript, extensive test suite, tree-shakable, tiny footprint.
-    **Batteries included:** Gestures, springs, layout transitions, scroll-linked effects, timelines.
-
-## 🍦 Platforms
-
-Motion is available for [React](https://motion.dev/docs/react), [JavaScript](https://motion.dev/docs/quick-start) and [Vue](https://motion.dev/docs/vue).
-
-### React
-
-```jsx
-import { motion } from "motion/react"
-
-function Component() {
-    return <motion.div animate={{ x: 100 }} />
-}
+```bash
+cd odooxadamas-hackathon-26
 ```
 
-Get started with [Motion for React](https://motion.dev/docs/react).
+Install dependencies
 
-**Note:** Framer Motion is now Motion. Import from `motion/react` instead of `framer-motion`.
-
-### JS
-
-```javascript
-import { animate } from "motion"
-
-animate("#box", { x: 100 })
+```bash
+npm install
 ```
 
-Get started with [JavaScript](https://motion.dev/docs/quick-start).
+Run the application
 
-### Vue
-
-```html
-<script>
-    import { motion } from "motion-v"
-</script>
-
-<template> <motion.div :animate={{ x: 100 }} /> </template>
+```bash
+npm run dev
 ```
 
-Get started with [Motion for Vue](https://motion.dev/docs/vue).
+Build the project
 
-## 🎓 Examples & tutorials
+```bash
+npm run build
+```
 
-Browse 330+ [official examples](https://motion.dev/examples), with copy-paste code that'll level-up your animations whether you're a beginner or an expert.
+---
 
-Over 100 examples come with a full step-by-step [tutorial](https://motion.dev/tutorials).
+# Future Enhancements
 
-## ⚡️ Motion+
+- AI-powered Resume Screening
+- Face Recognition Attendance
+- Mobile Application
+- Email Notifications
+- Employee Chat System
+- Biometric Integration
+- Advanced Analytics Dashboard
+- Cloud Deployment
 
-A one-time payment, lifetime-updates membership:
+---
 
--   **330+ examples**
--   **100+ tutorials**
--   **Premium APIs** like [Cursor](https://motion.dev/docs/cursor) and [Ticker](https://motion.dev/docs/react-ticker)
--   **Transition editor** for Cursor and VS Code
--   **AI skills**
--   **Private Discord**
--   **Early access content**
+# Benefits
 
-[Get Motion+](https://motion.dev/plus)
+- Saves Time
+- Reduces Manual Work
+- Improves Employee Productivity
+- Secure Data Management
+- Easy Record Maintenance
+- Better Decision Making
+- Centralized HR Operations
 
-## 👩🏻‍⚖️ License
+---
 
--   Motion is MIT licensed.
+# Target Users
 
-## 💎 Contribute
+- HR Administrators
+- Company Managers
+- Employees
+- Recruiters
 
--   Want to contribute to Motion? Our [contributing guide](https://github.com/motiondivision/motion/blob/master/CONTRIBUTING.md) has you covered.
+---
 
-## ✨ Sponsors
+# Screens
 
-Motion is sustainable thanks to the kind support of its sponsors.
+- Login
+- Dashboard
+- Employee Management
+- Attendance
+- Leave Management
+- Payroll
+- Recruitment
+- Performance
+- Reports
+- Profile
 
-[Become a sponsor](https://motion.dev/sponsor)
+---
 
-### Partners
+# Testing
 
-Motion powers the animations for all websites built with Framer, the web builder for creative pros. The Motion website itself is built on Framer, for its delightful canvas-based editing and powerful CMS features.
+The application has been tested for:
 
-<a href="https://framer.link/FlnUbQY">
-  <img alt="Framer" src="https://github.com/user-attachments/assets/22a79be7-672e-4336-bfb7-5d55d1deb917" width="250px" height="150px">
-</a>
+- User Authentication
+- Employee CRUD Operations
+- Attendance Module
+- Leave Module
+- Payroll Module
+- Responsive Design
+- Navigation
+- Form Validation
 
-Motion drives the animations on the Cursor homepage, and is working with Cursor to bring powerful AI workflows to the Motion examples and docs.
+---
 
-<a href="https://cursor.com">
-  <img alt="Cursor" src="https://github.com/user-attachments/assets/81c482d3-c2c2-4b35-bbcf-933b28d5b448" width="250px" height="150px" />
-</a>
+# License
 
-### Platinum
+This project was developed for educational purposes as part of the **Odoo x Adamas University Hackathon 2026**.
 
-<a href="https://linear.app"><img alt="Linear" src="https://github.com/user-attachments/assets/f9ce44b4-af28-4770-bb6e-9515b474bfb2" width="250px" height="150px"></a> <a href="https://figma.com"><img alt="Figma" src="https://github.com/user-attachments/assets/1077d0ab-4305-4a1f-81c8-d5be8c4c6717" width="250px" height="150px"></a> <a href="https://sanity.io"><img alt="Sanity" src="https://github.com/user-attachments/assets/80134088-f456-483f-8edd-940593c120ce" width="250px" height="150px"></a> <a href="https://animations.dev"><img alt="Sanity" src="https://github.com/user-attachments/assets/7c5ab87d-c7d9-44b4-9c7e-f9e6a9f3ba3b" width="250px" height="150px"></a> <a href="https://clerk.com?utm_campaign=motion"><img alt="Clerk" src="https://github.com/user-attachments/assets/16789f85-eaf4-46fb-9961-b3e66d33afbc" width="250px" height="150px"></a>
+---
+# Installation
 
-### Gold
+## Clone the Repository
 
-### Silver
+```bash
+git clone https://github.com/Autreema/odooxadamas-hackathon-26.git
+```
 
-<a href="https://liveblocks.io"><img alt="Liveblocks" src="https://github.com/user-attachments/assets/28eddbe5-1617-4e74-969d-2eb6fcd481af" width="150px" height="100px"></a> <a href="https://www.frontend.fyi/?utm_source=motion"><img alt="Frontend.fyi" src="https://github.com/user-attachments/assets/f16e3eb9-f0bd-4ad1-8049-f079a3d65c69" width="150px" height="100px"></a> <a href="https://firecrawl.dev"><img alt="Firecrawl" src="https://github.com/user-attachments/assets/2c44e7f4-5c2a-4714-9050-1570538665ff" width="150px" height="100px"></a> <a href="https://bolt.new"><img alt="Bolt.new" src="https://github.com/user-attachments/assets/7932d4b2-bb6c-422e-82b9-6ad78a7e3090" width="150px" height="100px"></a>
+## Navigate to the Project Folder
 
-### Personal
+```bash
+cd odooxadamas-hackathon-26
+```
 
--   [OlegWock](https://sinja.io)
--   [Lambert Weller](https://github.com/l-mbert)
--   [Jake LeBoeuf](https://jklb.wf)
+## Install Dependencies
+
+```bash
+npm install
+```
+
+## Install Required Packages
+
+```bash
+npm install react react-dom
+```
+
+```bash
+npm install react-router-dom
+```
+
+```bash
+npm install axios
+```
+
+```bash
+npm install tailwindcss @tailwindcss/vite
+```
+
+```bash
+npm install lucide-react
+```
+
+```bash
+npm install recharts
+```
+
+```bash
+npm install date-fns
+```
+
+```bash
+npm install clsx
+```
+
+## Run the Development Server
+
+```bash
+npm run dev
+```
+
+## Build the Project
+
+```bash
+npm run build
+```
+
+## Preview the Production Build
+
+```bash
+npm run preview
+```
