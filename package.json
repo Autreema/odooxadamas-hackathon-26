@@ -1,74 +1,53 @@
 {
-  "name": "escalade",
-  "version": "3.2.0",
-  "repository": "lukeed/escalade",
-  "description": "A tiny (183B to 210B) and fast utility to ascend parent directories",
-  "module": "dist/index.mjs",
-  "main": "dist/index.js",
-  "types": "index.d.ts",
-  "license": "MIT",
-  "author": {
-    "name": "Luke Edwards",
-    "email": "luke.edwards05@gmail.com",
-    "url": "https://lukeed.com"
+  "name": "graceful-fs",
+  "description": "A drop-in replacement for fs, making various improvements.",
+  "version": "4.2.11",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/isaacs/node-graceful-fs"
   },
-  "exports": {
-    ".": [
-      {
-        "import": {
-          "types": "./index.d.mts",
-          "default": "./dist/index.mjs"
-        },
-        "require": {
-          "types": "./index.d.ts",
-          "default": "./dist/index.js"
-        }
-      },
-      "./dist/index.js"
-    ],
-    "./sync": [
-      {
-        "import": {
-          "types": "./sync/index.d.mts",
-          "default": "./sync/index.mjs"
-        },
-        "require": {
-          "types": "./sync/index.d.ts",
-          "default": "./sync/index.js"
-        }
-      },
-      "./sync/index.js"
-    ]
-  },
-  "files": [
-    "*.d.mts",
-    "*.d.ts",
-    "dist",
-    "sync"
-  ],
-  "modes": {
-    "sync": "src/sync.js",
-    "default": "src/async.js"
-  },
-  "engines": {
-    "node": ">=6"
+  "main": "graceful-fs.js",
+  "directories": {
+    "test": "test"
   },
   "scripts": {
-    "build": "bundt",
-    "pretest": "npm run build",
-    "test": "uvu -r esm test -i fixtures"
+    "preversion": "npm test",
+    "postversion": "npm publish",
+    "postpublish": "git push origin --follow-tags",
+    "test": "nyc --silent node test.js | tap -c -",
+    "posttest": "nyc report"
   },
   "keywords": [
-    "find",
-    "parent",
-    "parents",
-    "directory",
-    "search",
-    "walk"
+    "fs",
+    "module",
+    "reading",
+    "retry",
+    "retries",
+    "queue",
+    "error",
+    "errors",
+    "handling",
+    "EMFILE",
+    "EAGAIN",
+    "EINVAL",
+    "EPERM",
+    "EACCESS"
   ],
+  "license": "ISC",
   "devDependencies": {
-    "bundt": "1.1.1",
-    "esm": "3.2.25",
-    "uvu": "0.3.3"
+    "import-fresh": "^2.0.0",
+    "mkdirp": "^0.5.0",
+    "rimraf": "^2.2.8",
+    "tap": "^16.3.4"
+  },
+  "files": [
+    "fs.js",
+    "graceful-fs.js",
+    "legacy-streams.js",
+    "polyfills.js",
+    "clone.js"
+  ],
+  "tap": {
+    "reporter": "classic"
   }
 }

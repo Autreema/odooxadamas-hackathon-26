@@ -1,36 +1,15 @@
-var versions = require('./versions');
-var fullVersions = require('./full-versions');
-var chromiumVersions = require('./chromium-versions');
-var fullChromiumVersions = require('./full-chromium-versions');
+'use strict';
 
-var electronToChromium = function (query) {
-  var number = getQueryString(query);
-  return number.split('.').length > 2 ? fullVersions[number] : versions[number] || undefined;
-};
+/** @type {import('.')} */
+var $gOPD = require('./gOPD');
 
-var chromiumToElectron = function (query) {
-  var number = getQueryString(query);
-  return number.split('.').length > 2 ? fullChromiumVersions[number] : chromiumVersions[number] || undefined;
-};
+if ($gOPD) {
+	try {
+		$gOPD([], 'length');
+	} catch (e) {
+		// IE 8 has a broken gOPD
+		$gOPD = null;
+	}
+}
 
-var electronToBrowserList = function (query) {
-  var number = getQueryString(query);
-  return versions[number] ? "Chrome >= " + versions[number] : undefined;
-};
-
-var getQueryString = function (query) {
-  var number = query;
-  if (query === 1) { number = "1.0" }
-  if (typeof query === 'number') { number += ''; }
-  return number;
-};
-
-module.exports = {
-  versions: versions,
-  fullVersions: fullVersions,
-  chromiumVersions: chromiumVersions,
-  fullChromiumVersions: fullChromiumVersions,
-  electronToChromium: electronToChromium,
-  electronToBrowserList: electronToBrowserList,
-  chromiumToElectron: chromiumToElectron
-};
+module.exports = $gOPD;

@@ -1,15 +1,5 @@
-type Promisable<T> = T | Promise<T>;
+declare function gOPD<O extends object, K extends keyof O>(obj: O, prop: K): PropertyDescriptor | undefined;
 
-declare namespace escalade {
-	export type Callback = (
-		directory: string,
-		files: string[],
-	) => Promisable<string | false | void>;
-}
+declare const fn: typeof gOPD | undefined | null;
 
-declare function escalade(
-	directory: string,
-	callback: escalade.Callback,
-): Promise<string | void>;
-
-export = escalade;
+export = fn;
