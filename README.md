@@ -1,341 +1,145 @@
-# Human Resource Management System (HRMS)
-
-
-
-# Project Overview
-
-The Human Resource Management System (HRMS) is a web-based application developed to simplify and automate human resource operations within an organization. The system enables HR administrators and employees to efficiently manage employee information, attendance, leave requests, payroll, recruitment, and performance evaluation through a centralized platform.
-
-The application is designed with a modern and responsive user interface, providing an intuitive experience for both administrators and employees.
-
----
-
-# Problem Statement
-
-Organizations often face difficulties in managing employee records manually, resulting in data redundancy, errors, and time-consuming administrative work.
-
-This project addresses these challenges by providing a centralized Human Resource Management System that automates HR activities and improves productivity.
-
----
-
-# Objectives
-
-- Digitize employee management
-- Reduce manual paperwork
-- Improve HR efficiency
-- Maintain accurate employee records
-- Simplify leave and attendance management
-- Generate payroll automatically
-- Provide real-time HR analytics
-
----
-
-# Features
-
-## Authentication
-- Secure Login
-- Role-Based Access
-- User Registration
-- Password Protection
-
----
-
-## Employee Management
-
-- Add Employees
-- Update Employee Details
-- Delete Employee Records
-- Employee Directory
-- Employee Profiles
-
----
-
-## Attendance Management
-
-- Daily Attendance
-- Check-In / Check-Out
-- Attendance Reports
-- Monthly Attendance Summary
-
----
-
-## Leave Management
-
-- Apply Leave
-- Approve/Reject Leave
-- Leave Balance Tracking
-- Leave History
-
----
-
-## Payroll Management
-
-- Salary Details
-- Monthly Payroll
-- Salary Slip Generation
-- Payroll Reports
-
----
-
-## Department Management
-
-- Create Departments
-- Assign Employees
-- Department Overview
-
----
-
-## Recruitment
-
-- Job Openings
-- Candidate Details
-- Interview Tracking
-- Hiring Status
-
----
-
-## Performance Management
-
-- Employee Performance
-- Performance Reviews
-- Ratings
-- Feedback
-
----
-
-## Dashboard
-
-- Employee Statistics
-- Attendance Summary
-- Leave Statistics
-- Payroll Overview
-- Quick Navigation
-
----
-
-# Technology Stack
-
-## Frontend
-
-- React
-- TypeScript
-- Vite
-- HTML5
-- CSS3
-- Tailwind CSS
-
-## Backend
-
-- Node.js
-- Express.js
-
-## Database
-
-- MongoDB
-
-## Version Control
-
-- Git
-- GitHub
-
----
-
-# Project Structure
-
-```
-HRMS
-│
-├── src
-│   ├── components
-│   ├── pages
-│   ├── assets
-│   ├── hooks
-│   ├── services
-│   ├── context
-│   ├── styles
-│   └── utils
-│
-├── public
-│
-├── package.json
-├── vite.config.ts
-├── tsconfig.json
-└── README.md
-```
-
----
-
-# Installation
-
-Clone the repository
+### A `FormData` polyfill for the browser ...and a module for NodeJS (`New!`)
 
 ```bash
-git clone https://github.com/Autreema/odooxadamas-hackathon-26.git
+npm install formdata-polyfill
 ```
 
-Navigate to the project
+The browser polyfill will likely have done its part already, and i hope you stop supporting old browsers c",)<br>
+But NodeJS still laks a proper FormData<br>The good old form-data package is a very old and isn't spec compatible and dose some abnormal stuff to construct and read FormData instances that other http libraries are not happy about when it comes to follow the spec.
 
-```bash
-cd odooxadamas-hackathon-26
+### The NodeJS / ESM version
+- The modular (~2.3 KiB minified uncompressed) version of this package is independent of any browser stuff and don't patch anything
+- It's as pure/spec compatible as it possible gets the test are run by WPT.
+- It's compatible with [node-fetch](https://github.com/node-fetch/node-fetch).
+- It have higher platform dependencies as it uses classes, symbols, ESM & private fields
+- Only dependency it has is [fetch-blob](https://github.com/node-fetch/fetch-blob)
+
+```js
+// Node example
+import fetch from 'node-fetch'
+import File from 'fetch-blob/file.js'
+import { fileFromSync } from 'fetch-blob/from.js'
+import { FormData } from 'formdata-polyfill/esm.min.js'
+
+const file = fileFromSync('./README.md')
+const fd = new FormData()
+
+fd.append('file-upload', new File(['abc'], 'hello-world.txt'))
+fd.append('file-upload', file)
+
+// it's also possible to append file/blob look-a-like items
+// if you have streams coming from other destinations
+fd.append('file-upload', {
+  size: 123,
+  type: '',
+  name: 'cat-video.mp4',
+  stream() { return stream },
+  [Symbol.toStringTag]: 'File'
+})
+
+fetch('https://httpbin.org/post', { method: 'POST', body: fd })
 ```
 
-Install dependencies
+----
 
-```bash
-npm install
+It also comes with way to convert FormData into Blobs - it's not something that every developer should have to deal with.
+It's mainly for [node-fetch](https://github.com/node-fetch/node-fetch) and other http library to ease the process of serializing a FormData into a blob and just wish to deal with Blobs instead (Both Deno and Undici adapted a version of this [formDataToBlob](https://github.com/jimmywarting/FormData/blob/5ddea9e0de2fc5e246ab1b2f9d404dee0c319c02/formdata-to-blob.js) to the core and passes all WPT tests run by the browser itself)
+```js
+import { Readable } from 'node:stream'
+import { FormData, formDataToBlob } from 'formdata-polyfill/esm.min.js'
+
+const blob = formDataToBlob(new FormData())
+fetch('https://httpbin.org/post', { method: 'POST', body: blob })
+
+// node built in http and other similar http library have to do:
+const stream = Readable.from(blob.stream())
+const req = http.request('http://httpbin.org/post', {
+  method: 'post',
+  headers: {
+    'Content-Length': blob.size,
+    'Content-Type': blob.type
+  }
+})
+stream.pipe(req)
 ```
 
-Run the application
+PS: blob & file that are appended to the FormData will not be read until any of the serialized blob read-methods gets called
+...so uploading very large files is no biggie
 
-```bash
-npm run dev
+### Browser polyfill
+
+usage:
+
+```js
+import 'formdata-polyfill' // that's it
 ```
 
-Build the project
+The browser polyfill conditionally replaces the native implementation rather than fixing the missing functions,
+since otherwise there is no way to get or delete existing values in the FormData object.
+Therefore this also patches `XMLHttpRequest.prototype.send` and `fetch` to send the `FormData` as a blob,
+and `navigator.sendBeacon` to send native `FormData`.
 
-```bash
-npm run build
+I was unable to patch the Response/Request constructor
+so if you are constructing them with FormData then you need to call `fd._blob()` manually.
+
+```js
+new Request(url, {
+  method: 'post',
+  body: fd._blob ? fd._blob() : fd
+})
 ```
 
+Dependencies
 ---
 
-# Future Enhancements
+If you need to support IE <= 9 then I recommend you to include eligrey's [blob.js]
+(which i hope you don't - since IE is now dead)
 
-- AI-powered Resume Screening
-- Face Recognition Attendance
-- Mobile Application
-- Email Notifications
-- Employee Chat System
-- Biometric Integration
-- Advanced Analytics Dashboard
-- Cloud Deployment
+<details>
+    <summary>Updating from 2.x to 3.x</summary>
 
+Previously you had to import the polyfill and use that,
+since it didn't replace the global (existing) FormData implementation.
+But now it transparently calls `_blob()` for you when you are sending something with fetch or XHR,
+by way of monkey-patching the `XMLHttpRequest.prototype.send` and `fetch` functions.
+
+So you maybe had something like this:
+
+```javascript
+var FormData = require('formdata-polyfill')
+var fd = new FormData(form)
+xhr.send(fd._blob())
+```
+
+There is no longer anything exported from the module
+(though you of course still need to import it to install the polyfill),
+so you can now use the FormData object as normal:
+
+```javascript
+require('formdata-polyfill')
+var fd = new FormData(form)
+xhr.send(fd)
+```
+
+</details>
+
+
+
+Native Browser compatibility (as of 2021-05-08)
 ---
+Based on this you can decide for yourself if you need this polyfill.
 
-# Benefits
+[![screenshot](https://user-images.githubusercontent.com/1148376/117550329-0993aa80-b040-11eb-976c-14e31f1a3ba4.png)](https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility)
 
-- Saves Time
-- Reduces Manual Work
-- Improves Employee Productivity
-- Secure Data Management
-- Easy Record Maintenance
-- Better Decision Making
-- Centralized HR Operations
 
----
 
-# Target Users
+This normalizes support for the FormData API:
 
-- HR Administrators
-- Company Managers
-- Employees
-- Recruiters
+ - `append` with filename
+ - `delete()`, `get()`, `getAll()`, `has()`, `set()`
+ - `entries()`, `keys()`, `values()`, and support for `for...of`
+ - Available in web workers (just include the polyfill)
 
----
-
-# Screens
-
-- Login
-- Dashboard
-- Employee Management
-- Attendance
-- Leave Management
-- Payroll
-- Recruitment
-- Performance
-- Reports
-- Profile
-
----
-
-# Testing
-
-The application has been tested for:
-
-- User Authentication
-- Employee CRUD Operations
-- Attendance Module
-- Leave Module
-- Payroll Module
-- Responsive Design
-- Navigation
-- Form Validation
-
----
-
-# License
-
-This project was developed for educational purposes as part of the **Odoo x Adamas University Hackathon 2026**.
-
----
-# Installation
-
-## Clone the Repository
-
-```bash
-git clone https://github.com/Autreema/odooxadamas-hackathon-26.git
-```
-
-## Navigate to the Project Folder
-
-```bash
-cd odooxadamas-hackathon-26
-```
-
-## Install Dependencies
-
-```bash
-npm install
-```
-
-## Install Required Packages
-
-```bash
-npm install react react-dom
-```
-
-```bash
-npm install react-router-dom
-```
-
-```bash
-npm install axios
-```
-
-```bash
-npm install tailwindcss @tailwindcss/vite
-```
-
-```bash
-npm install lucide-react
-```
-
-```bash
-npm install recharts
-```
-
-```bash
-npm install date-fns
-```
-
-```bash
-npm install clsx
-```
-
-## Run the Development Server
-
-```bash
-npm run dev
-```
-
-## Build the Project
-
-```bash
-npm run build
-```
-
-## Preview the Production Build
-
-```bash
-npm run preview
-```
+  [npm-image]: https://img.shields.io/npm/v/formdata-polyfill.svg
+  [npm-url]: https://www.npmjs.com/package/formdata-polyfill
+  [blob.js]: https://github.com/eligrey/Blob.js

@@ -1,2 +1,3 @@
-import { Long } from "./types.js";
-export default Long;
+/** @type {typeof globalThis.Blob} */
+export const Blob: typeof globalThis.Blob;
+export default Blob;
