@@ -1,211 +1,255 @@
-# escalade [![CI](https://github.com/lukeed/escalade/workflows/CI/badge.svg)](https://github.com/lukeed/escalade/actions) [![licenses](https://licenses.dev/b/npm/escalade)](https://licenses.dev/npm/escalade) [![codecov](https://badgen.now.sh/codecov/c/github/lukeed/escalade)](https://codecov.io/gh/lukeed/escalade)
+# node-jws [![Build Status](https://secure.travis-ci.org/brianloveswords/node-jws.svg)](http://travis-ci.org/brianloveswords/node-jws)
 
-> A tiny (183B to 210B) and [fast](#benchmarks) utility to ascend parent directories
+An implementation of [JSON Web Signatures](http://self-issued.info/docs/draft-ietf-jose-json-web-signature.html).
 
-With [escalade](https://en.wikipedia.org/wiki/Escalade), you can scale parent directories until you've found what you're looking for.<br>Given an input file or directory, `escalade` will continue executing your callback function until either:
+This was developed against `draft-ietf-jose-json-web-signature-08` and
+implements the entire spec **except** X.509 Certificate Chain
+signing/verifying (patches welcome).
 
-1) the callback returns a truthy value
-2) `escalade` has reached the system root directory (eg, `/`)
+There are both synchronous (`jws.sign`, `jws.verify`) and streaming
+(`jws.createSign`, `jws.createVerify`) APIs.
 
-> **Important:**<br>Please note that `escalade` only deals with direct ancestry – it will not dive into parents' sibling directories.
+# Install
 
----
-
-**Notice:** As of v3.1.0, `escalade` now includes [Deno support](http://deno.land/x/escalade)! Please see [Deno Usage](#deno) below.
-
----
-
-## Install
-
-```
-$ npm install --save escalade
+```bash
+$ npm install jws
 ```
 
+# Usage
 
-## Modes
+## jws.ALGORITHMS
 
-There are two "versions" of `escalade` available:
+Array of supported algorithms. The following algorithms are currently supported.
 
-#### "async"
-> **Node.js:** >= 8.x<br>
-> **Size (gzip):** 210 bytes<br>
-> **Availability:** [CommonJS](https://unpkg.com/escalade/dist/index.js), [ES Module](https://unpkg.com/escalade/dist/index.mjs)
+alg Parameter Value | Digital Signature or MAC Algorithm
+----------------|----------------------------
+HS256 | HMAC using SHA-256 hash algorithm
+HS384 | HMAC using SHA-384 hash algorithm
+HS512 | HMAC using SHA-512 hash algorithm
+RS256 | RSASSA using SHA-256 hash algorithm
+RS384 | RSASSA using SHA-384 hash algorithm
+RS512 | RSASSA using SHA-512 hash algorithm
+PS256 | RSASSA-PSS using SHA-256 hash algorithm
+PS384 | RSASSA-PSS using SHA-384 hash algorithm
+PS512 | RSASSA-PSS using SHA-512 hash algorithm
+ES256 | ECDSA using P-256 curve and SHA-256 hash algorithm
+ES384 | ECDSA using P-384 curve and SHA-384 hash algorithm
+ES512 | ECDSA using P-521 curve and SHA-512 hash algorithm
+none | No digital signature or MAC value included
 
-This is the primary/default mode. It makes use of `async`/`await` and [`util.promisify`](https://nodejs.org/api/util.html#util_util_promisify_original).
+## jws.sign(options)
 
-#### "sync"
-> **Node.js:** >= 6.x<br>
-> **Size (gzip):** 183 bytes<br>
-> **Availability:** [CommonJS](https://unpkg.com/escalade/sync/index.js), [ES Module](https://unpkg.com/escalade/sync/index.mjs)
+(Synchronous) Return a JSON Web Signature for a header and a payload.
 
-This is the opt-in mode, ideal for scenarios where `async` usage cannot be supported.
+Options:
 
+* `header`
+* `payload`
+* `secret` or `privateKey`
+* `encoding` (Optional, defaults to 'utf8')
 
-## Usage
+`header` must be an object with an `alg` property. `header.alg` must be
+one a value found in `jws.ALGORITHMS`. See above for a table of
+supported algorithms.
 
-***Example Structure***
+If `payload` is not a buffer or a string, it will be coerced into a string
+using `JSON.stringify`.
 
-```
-/Users/lukeed
-  └── oss
-    ├── license
-    └── escalade
-      ├── package.json
-      └── test
-        └── fixtures
-          ├── index.js
-          └── foobar
-            └── demo.js
-```
-
-***Example Usage***
+Example
 
 ```js
-//~> demo.js
-import { join } from 'path';
-import escalade from 'escalade';
+const signature = jws.sign({
+  header: { alg: 'HS256' },
+  payload: 'h. jon benjamin',
+  secret: 'has a van',
+});
+```
 
-const input = join(__dirname, 'demo.js');
-// or: const input = __dirname;
+## jws.verify(signature, algorithm, secretOrKey)
 
-const pkg = await escalade(input, (dir, names) => {
-  console.log('~> dir:', dir);
-  console.log('~> names:', names);
-  console.log('---');
+(Synchronous) Returns `true` or `false` for whether a signature matches a
+secret or key.
 
-  if (names.includes('package.json')) {
-    // will be resolved into absolute
-    return 'package.json';
-  }
+`signature` is a JWS Signature. `header.alg` must be a value found in `jws.ALGORITHMS`.
+See above for a table of supported algorithms. `secretOrKey` is a string or
+buffer containing either the secret for HMAC algorithms, or the PEM
+encoded public key for RSA and ECDSA.
+
+Note that the `"alg"` value from the signature header is ignored.
+
+
+## jws.decode(signature)
+
+(Synchronous) Returns the decoded header, decoded payload, and signature
+parts of the JWS Signature.
+
+Returns an object with three properties, e.g.
+```js
+{ header: { alg: 'HS256' },
+  payload: 'h. jon benjamin',
+  signature: 'YOWPewyGHKu4Y_0M_vtlEnNlqmFOclqp4Hy6hVHfFT4'
+}
+```
+
+## jws.createSign(options)
+
+Returns a new SignStream object.
+
+Options:
+
+* `header` (required)
+* `payload`
+* `key` || `privateKey` || `secret`
+* `encoding` (Optional, defaults to 'utf8')
+
+Other than `header`, all options expect a string or a buffer when the
+value is known ahead of time, or a stream for convenience.
+`key`/`privateKey`/`secret` may also be an object when using an encrypted
+private key, see the [crypto documentation][encrypted-key-docs].
+
+Example:
+
+```js
+
+// This...
+jws.createSign({
+  header: { alg: 'RS256' },
+  privateKey: privateKeyStream,
+  payload: payloadStream,
+}).on('done', function(signature) {
+  // ...
 });
 
-//~> dir: /Users/lukeed/oss/escalade/test/fixtures/foobar
-//~> names: ['demo.js']
-//---
-//~> dir: /Users/lukeed/oss/escalade/test/fixtures
-//~> names: ['index.js', 'foobar']
-//---
-//~> dir: /Users/lukeed/oss/escalade/test
-//~> names: ['fixtures']
-//---
-//~> dir: /Users/lukeed/oss/escalade
-//~> names: ['package.json', 'test']
-//---
+// is equivalent to this:
+const signer = jws.createSign({
+  header: { alg: 'RS256' },
+});
+privateKeyStream.pipe(signer.privateKey);
+payloadStream.pipe(signer.payload);
+signer.on('done', function(signature) {
+  // ...
+});
+```
 
-console.log(pkg);
-//=> /Users/lukeed/oss/escalade/package.json
+## jws.createVerify(options)
 
-// Now search for "missing123.txt"
-// (Assume it doesn't exist anywhere!)
-const missing = await escalade(input, (dir, names) => {
-  console.log('~> dir:', dir);
-  return names.includes('missing123.txt') && 'missing123.txt';
+Returns a new VerifyStream object.
+
+Options:
+
+* `signature`
+* `algorithm`
+* `key` || `publicKey` || `secret`
+* `encoding` (Optional, defaults to 'utf8')
+
+All options expect a string or a buffer when the value is known ahead of
+time, or a stream for convenience.
+
+Example:
+
+```js
+
+// This...
+jws.createVerify({
+  publicKey: pubKeyStream,
+  signature: sigStream,
+}).on('done', function(verified, obj) {
+  // ...
 });
 
-//~> dir: /Users/lukeed/oss/escalade/test/fixtures/foobar
-//~> dir: /Users/lukeed/oss/escalade/test/fixtures
-//~> dir: /Users/lukeed/oss/escalade/test
-//~> dir: /Users/lukeed/oss/escalade
-//~> dir: /Users/lukeed/oss
-//~> dir: /Users/lukeed
-//~> dir: /Users
-//~> dir: /
-
-console.log(missing);
-//=> undefined
+// is equivilant to this:
+const verifier = jws.createVerify();
+pubKeyStream.pipe(verifier.publicKey);
+sigStream.pipe(verifier.signature);
+verifier.on('done', function(verified, obj) {
+  // ...
+});
 ```
 
-> **Note:** To run the above example with "sync" mode, import from `escalade/sync` and remove the `await` keyword.
+## Class: SignStream
 
+A `Readable Stream` that emits a single data event (the calculated
+signature) when done.
 
-## API
+### Event: 'done'
+`function (signature) { }`
 
-### escalade(input, callback)
-Returns: `string|void` or `Promise<string|void>`
+### signer.payload
 
-When your `callback` locates a file, `escalade` will resolve/return with an absolute path.<br>
-If your `callback` was never satisfied, then `escalade` will resolve/return with nothing (undefined).
+A `Writable Stream` that expects the JWS payload. Do *not* use if you
+passed a `payload` option to the constructor.
 
-> **Important:**<br>The `sync` and `async` versions share the same API.<br>The **only** difference is that `sync` is not Promise-based.
+Example:
 
-#### input
-Type: `string`
-
-The path from which to start ascending.
-
-This may be a file or a directory path.<br>However, when `input` is a file, `escalade` will begin with its parent directory.
-
-> **Important:** Unless given an absolute path, `input` will be resolved from `process.cwd()` location.
-
-#### callback
-Type: `Function`
-
-The callback to execute for each ancestry level. It always is given two arguments:
-
-1) `dir` - an absolute path of the current parent directory
-2) `names` - a list (`string[]`) of contents _relative to_ the `dir` parent
-
-> **Note:** The `names` list can contain names of files _and_ directories.
-
-When your callback returns a _falsey_ value, then `escalade` will continue with `dir`'s parent directory, re-invoking your callback with new argument values.
-
-When your callback returns a string, then `escalade` stops iteration immediately.<br>
-If the string is an absolute path, then it's left as is. Otherwise, the string is resolved into an absolute path _from_ the `dir` that housed the satisfying condition.
-
-> **Important:** Your `callback` can be a `Promise/AsyncFunction` when using the "async" version of `escalade`.
-
-## Benchmarks
-
-> Running on Node.js v10.13.0
-
-```
-# Load Time
-  find-up         3.891ms
-  escalade        0.485ms
-  escalade/sync   0.309ms
-
-# Levels: 6 (target = "foo.txt"):
-  find-up          x 24,856 ops/sec ±6.46% (55 runs sampled)
-  escalade         x 73,084 ops/sec ±4.23% (73 runs sampled)
-  find-up.sync     x  3,663 ops/sec ±1.12% (83 runs sampled)
-  escalade/sync    x  9,360 ops/sec ±0.62% (88 runs sampled)
-
-# Levels: 12 (target = "package.json"):
-  find-up          x 29,300 ops/sec ±10.68% (70 runs sampled)
-  escalade         x 73,685 ops/sec ± 5.66% (66 runs sampled)
-  find-up.sync     x  1,707 ops/sec ± 0.58% (91 runs sampled)
-  escalade/sync    x  4,667 ops/sec ± 0.68% (94 runs sampled)
-
-# Levels: 18 (target = "missing123.txt"):
-  find-up          x 21,818 ops/sec ±17.37% (14 runs sampled)
-  escalade         x 67,101 ops/sec ±21.60% (20 runs sampled)
-  find-up.sync     x  1,037 ops/sec ± 2.86% (88 runs sampled)
-  escalade/sync    x  1,248 ops/sec ± 0.50% (93 runs sampled)
+```js
+payloadStream.pipe(signer.payload);
 ```
 
-## Deno
+### signer.secret<br>signer.key<br>signer.privateKey
 
-As of v3.1.0, `escalade` is available on the Deno registry.
+A `Writable Stream`. Expects the JWS secret for HMAC, or the privateKey
+for ECDSA and RSA. Do *not* use if you passed a `secret` or `key` option
+to the constructor.
 
-Please note that the [API](#api) is identical and that there are still [two modes](#modes) from which to choose:
+Example:
 
-```ts
-// Choose "async" mode
-import escalade from 'https://deno.land/escalade/async.ts';
-
-// Choose "sync" mode
-import escalade from 'https://deno.land/escalade/sync.ts';
+```js
+privateKeyStream.pipe(signer.privateKey);
 ```
 
-> **Important:** The `allow-read` permission is required!
+## Class: VerifyStream
 
+This is a `Readable Stream` that emits a single data event, the result
+of whether or not that signature was valid.
 
-## Related
+### Event: 'done'
+`function (valid, obj) { }`
 
-- [premove](https://github.com/lukeed/premove) - A tiny (247B) utility to remove items recursively
-- [totalist](https://github.com/lukeed/totalist) - A tiny (195B to 224B) utility to recursively list all (total) files in a directory
-- [mk-dirs](https://github.com/lukeed/mk-dirs) - A tiny (420B) utility to make a directory and its parents, recursively
+`valid` is a boolean for whether or not the signature is valid.
 
-## License
+### verifier.signature
 
-MIT © [Luke Edwards](https://lukeed.com)
+A `Writable Stream` that expects a JWS Signature. Do *not* use if you
+passed a `signature` option to the constructor.
+
+### verifier.secret<br>verifier.key<br>verifier.publicKey
+
+A `Writable Stream` that expects a public key or secret. Do *not* use if you
+passed a `key` or `secret` option to the constructor.
+
+# TODO
+
+* It feels like there should be some convenience options/APIs for
+  defining the algorithm rather than having to define a header object
+  with `{ alg: 'ES512' }` or whatever every time.
+
+* X.509 support, ugh
+
+# License
+
+MIT
+
+```
+Copyright (c) 2013-2015 Brian J. Brennan
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
+
+[encrypted-key-docs]: https://nodejs.org/api/crypto.html#crypto_sign_sign_private_key_output_format
