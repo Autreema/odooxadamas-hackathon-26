@@ -1,8 +1,9 @@
 {
-    "compilerOptions": {
-        "target": "ES5",
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "esModuleInterop": true,
-    }
+	"extends": "@ljharb/tsconfig",
+	"compilerOptions": {
+		"target": "ES2021",
+	},
+	"exclude": [
+		"coverage",
+	],
 }

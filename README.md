@@ -1,347 +1,186 @@
-# Human Resource Management System (HRMS)
+### Made by [@kilianvalkhof](https://twitter.com/kilianvalkhof)
 
+#### Other projects:
 
-
-# Project Overview
-
-The Human Resource Management System (HRMS) is a web-based application developed to simplify and automate human resource operations within an organization. The system enables HR administrators and employees to efficiently manage employee information, attendance, leave requests, payroll, recruitment, and performance evaluation through a centralized platform.
-
-The application is designed with a modern and responsive user interface, providing an intuitive experience for both administrators and employees.
+- 💻 [Polypane](https://polypane.app) - Develop responsive websites and apps twice as fast on multiple screens at once
+- 🖌️ [Superposition](https://superposition.design) - Kickstart your design system by extracting design tokens from your website
+- 🗒️ [FromScratch](https://fromscratch.rocks) - A smart but simple autosaving scratchpad
 
 ---
 
-# Problem Statement
+# Electron-to-Chromium [![npm](https://img.shields.io/npm/v/electron-to-chromium.svg)](https://www.npmjs.com/package/electron-to-chromium) [![npm-downloads](https://img.shields.io/npm/dm/electron-to-chromium.svg)](https://www.npmjs.com/package/electron-to-chromium) [![codecov](https://codecov.io/gh/Kilian/electron-to-chromium/branch/master/graph/badge.svg)](https://codecov.io/gh/Kilian/electron-to-chromium)[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FKilian%2Felectron-to-chromium.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FKilian%2Felectron-to-chromium?ref=badge_shield)
 
-Organizations often face difficulties in managing employee records manually, resulting in data redundancy, errors, and time-consuming administrative work.
+This repository provides a mapping of Electron versions to the Chromium version that it uses.
 
-This project addresses these challenges by providing a centralized Human Resource Management System that automates HR activities and improves productivity.
+This package is used in [Browserslist](https://github.com/ai/browserslist), so you can use e.g. `electron >= 1.4` in [Autoprefixer](https://github.com/postcss/autoprefixer), [Stylelint](https://github.com/stylelint/stylelint), [babel-preset-env](https://github.com/babel/babel-preset-env) and [eslint-plugin-compat](https://github.com/amilajack/eslint-plugin-compat).
 
----
+**Supported by:**
 
-# Objectives
+  <a href="https://m.do.co/c/bb22ea58e765">
+    <img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/SVG/DO_Logo_horizontal_blue.svg" width="201px">
+  </a>
 
-- Digitize employee management
-- Reduce manual paperwork
-- Improve HR efficiency
-- Maintain accurate employee records
-- Simplify leave and attendance management
-- Generate payroll automatically
-- Provide real-time HR analytics
 
----
+## Install
+Install using `npm install electron-to-chromium`.
 
-# Features
+## Usage
+To include Electron-to-Chromium, require it:
 
-## Authentication
-- Secure Login
-- Role-Based Access
-- User Registration
-- Password Protection
-
----
-
-## Employee Management
-
-- Add Employees
-- Update Employee Details
-- Delete Employee Records
-- Employee Directory
-- Employee Profiles
-
----
-
-## Attendance Management
-
-- Daily Attendance
-- Check-In / Check-Out
-- Attendance Reports
-- Monthly Attendance Summary
-
----
-
-## Leave Management
-
-- Apply Leave
-- Approve/Reject Leave
-- Leave Balance Tracking
-- Leave History
-
----
-
-## Payroll Management
-
-- Salary Details
-- Monthly Payroll
-- Salary Slip Generation
-- Payroll Reports
-
----
-
-## Department Management
-
-- Create Departments
-- Assign Employees
-- Department Overview
-
----
-
-## Recruitment
-
-- Job Openings
-- Candidate Details
-- Interview Tracking
-- Hiring Status
-
----
-
-## Performance Management
-
-- Employee Performance
-- Performance Reviews
-- Ratings
-- Feedback
-
----
-
-## Dashboard
-
-- Employee Statistics
-- Attendance Summary
-- Leave Statistics
-- Payroll Overview
-- Quick Navigation
-
----
-
-# Technology Stack
-
-## Frontend
-
-- React
-- TypeScript
-- Vite
-- HTML5
-- CSS3
-- Tailwind CSS
-
-## Backend
-
-- Node.js
-- Express.js
-
-## Database
-
-- MongoDB
-
-## Version Control
-
-- Git
-- GitHub
-
----
-
-# Project Structure
-
-```
-HRMS
-│
-├── src
-│   ├── components
-│   ├── pages
-│   ├── assets
-│   ├── hooks
-│   ├── services
-│   ├── context
-│   ├── styles
-│   └── utils
-│
-├── public
-│
-├── package.json
-├── vite.config.ts
-├── tsconfig.json
-└── README.md
+```js
+var e2c = require('electron-to-chromium');
 ```
 
----
+### Properties
+The Electron-to-Chromium object has 4 properties to use:
 
-# Installation
+#### `versions`
+An object of key-value pairs with a _major_ Electron version as the key, and the corresponding major Chromium version as the value.
 
-Clone the repository
-
-```bash
-git clone https://github.com/Autreema/odooxadamas-hackathon-26.git
+```js
+var versions = e2c.versions;
+console.log(versions['1.4']);
+// returns "53"
 ```
 
-Navigate to the project
+#### `fullVersions`
+An object of key-value pairs with a Electron version as the key, and the corresponding full Chromium version as the value.
 
-```bash
-cd odooxadamas-hackathon-26
+```js
+var versions = e2c.fullVersions;
+console.log(versions['1.4.11']);
+// returns "53.0.2785.143"
 ```
 
-Install dependencies
+#### `chromiumVersions`
+An object of key-value pairs with a _major_ Chromium version as the key, and the corresponding major Electron version as the value.
 
-```bash
-npm install
+```js
+var versions = e2c.chromiumVersions;
+console.log(versions['54']);
+// returns "1.4"
 ```
 
-Run the application
+#### `fullChromiumVersions`
+An object of key-value pairs with a Chromium version as the key, and an array of the corresponding major Electron versions as the value.
 
-```bash
-npm run dev
+```js
+var versions = e2c.fullChromiumVersions;
+console.log(versions['54.0.2840.101']);
+// returns ["1.5.1", "1.5.0"]
+```
+### Functions
+
+#### `electronToChromium(query)`
+Arguments:
+* Query: string or number, required. A major or full Electron version.
+
+A function that returns the corresponding Chromium version for a given Electron function. Returns a string.
+
+If you provide it with a major Electron version, it will return a major Chromium version:
+
+```js
+var chromeVersion = e2c.electronToChromium('1.4');
+// chromeVersion is "53"
 ```
 
-Build the project
+If you provide it with a full Electron version, it will return the full Chromium version.
 
-```bash
-npm run build
+```js
+var chromeVersion = e2c.electronToChromium('1.4.11');
+// chromeVersion is "53.0.2785.143"
 ```
 
----
+If a query does not match a Chromium version, it will return `undefined`.
 
-# Future Enhancements
-
-- AI-powered Resume Screening
-- Face Recognition Attendance
-- Mobile Application
-- Email Notifications
-- Employee Chat System
-- Biometric Integration
-- Advanced Analytics Dashboard
-- Cloud Deployment
-
----
-
-# Benefits
-
-- Saves Time
-- Reduces Manual Work
-- Improves Employee Productivity
-- Secure Data Management
-- Easy Record Maintenance
-- Better Decision Making
-- Centralized HR Operations
-
----
-
-# Target Users
-
-- HR Administrators
-- Company Managers
-- Employees
-- Recruiters
-
----
-
-# Screens
-
-- Login
-- Dashboard
-- Employee Management
-- Attendance
-- Leave Management
-- Payroll
-- Recruitment
-- Performance
-- Reports
-- Profile
-
----
-
-# Testing
-
-The application has been tested for:
-
-- User Authentication
-- Employee CRUD Operations
-- Attendance Module
-- Leave Module
-- Payroll Module
-- Responsive Design
-- Navigation
-- Form Validation
-
----
-
-# License
-
-This project was developed for educational purposes as part of the **Odoo x Adamas University Hackathon 2026**.
-
----
-
-# Acknowledgement
-
-We sincerely thank **Odoo** and **Adamas University** for providing this opportunity to develop an innovative Human Resource Management System and enhance our practical software development skills.
-
----
-# Installation
-
-## Clone the Repository
-
-```bash
-git clone https://github.com/Autreema/odooxadamas-hackathon-26.git
+```js
+var chromeVersion = e2c.electronToChromium('9000');
+// chromeVersion is undefined
 ```
 
-## Navigate to the Project Folder
+#### `chromiumToElectron(query)`
+Arguments:
+* Query: string or number, required. A major or full Chromium version.
 
-```bash
-cd odooxadamas-hackathon-26
+Returns a string with the corresponding Electron version for a given Chromium query.
+
+If you provide it with a major Chromium version, it will return a major Electron version:
+
+```js
+var electronVersion = e2c.chromiumToElectron('54');
+// electronVersion is "1.4"
 ```
 
-## Install Dependencies
+If you provide it with a full Chrome version, it will return an array of full Electron versions.
 
-```bash
-npm install
+```js
+var electronVersions = e2c.chromiumToElectron('56.0.2924.87');
+// electronVersions is ["1.6.3", "1.6.2", "1.6.1", "1.6.0"]
 ```
 
-## Install Required Packages
+If a query does not match an Electron version, it will return `undefined`.
 
-```bash
-npm install react react-dom
+```js
+var electronVersion = e2c.chromiumToElectron('10');
+// electronVersion is undefined
 ```
 
-```bash
-npm install react-router-dom
+#### `electronToBrowserList(query)` **DEPRECATED**
+Arguments:
+* Query: string or number, required. A major Electron version.
+
+_**Deprecated**: Browserlist already includes electron-to-chromium._
+
+A function that returns a [Browserslist](https://github.com/ai/browserslist) query that matches the given major Electron version. Returns a string.
+
+If you provide it with a major Electron version, it will return a Browserlist query string that matches the Chromium capabilities:
+
+```js
+var query = e2c.electronToBrowserList('1.4');
+// query is "Chrome >= 53"
 ```
 
-```bash
-npm install axios
+If a query does not match a Chromium version, it will return `undefined`.
+
+```js
+var query = e2c.electronToBrowserList('9000');
+// query is undefined
 ```
 
-```bash
-npm install tailwindcss @tailwindcss/vite
+### Importing just versions, fullVersions, chromiumVersions and fullChromiumVersions
+All lists can be imported on their own, if file size is a concern.
+
+#### `versions`
+
+```js
+var versions = require('electron-to-chromium/versions');
 ```
 
-```bash
-npm install lucide-react
+#### `fullVersions`
+
+```js
+var fullVersions = require('electron-to-chromium/full-versions');
 ```
 
-```bash
-npm install recharts
+#### `chromiumVersions`
+
+```js
+var chromiumVersions = require('electron-to-chromium/chromium-versions');
 ```
 
-```bash
-npm install date-fns
+#### `fullChromiumVersions`
+
+```js
+var fullChromiumVersions = require('electron-to-chromium/full-chromium-versions');
 ```
 
-```bash
-npm install clsx
-```
+## Updating
+This package will be updated with each new Electron release.
 
-## Run the Development Server
+To update the list, run `npm run build.js`. Requires internet access as it downloads from the canonical list of Electron versions.
 
-```bash
-npm run dev
-```
+To verify correct behaviour, run `npm test`.
 
-## Build the Project
 
-```bash
-npm run build
-```
-
-## Preview the Production Build
-
-```bash
-npm run preview
-```
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FKilian%2Felectron-to-chromium.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FKilian%2Felectron-to-chromium?ref=badge_large)
