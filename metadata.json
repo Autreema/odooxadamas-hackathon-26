@@ -1,0 +1,6 @@
+{
+  "name": "Human Resource Management System",
+  "description": "A comprehensive HRMS with role-based access control, employee profile management, daily/weekly attendance with check-in/out, leave calendar, salary/payroll management, and exhaustive system audit logging.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
