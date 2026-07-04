@@ -1,53 +1,46 @@
 {
-  "name": "graceful-fs",
-  "description": "A drop-in replacement for fs, making various improvements.",
-  "version": "4.2.11",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/isaacs/node-graceful-fs"
-  },
-  "main": "graceful-fs.js",
-  "directories": {
-    "test": "test"
-  },
-  "scripts": {
-    "preversion": "npm test",
-    "postversion": "npm publish",
-    "postpublish": "git push origin --follow-tags",
-    "test": "nyc --silent node test.js | tap -c -",
-    "posttest": "nyc report"
-  },
-  "keywords": [
-    "fs",
-    "module",
-    "reading",
-    "retry",
-    "retries",
-    "queue",
-    "error",
-    "errors",
-    "handling",
-    "EMFILE",
-    "EAGAIN",
-    "EINVAL",
-    "EPERM",
-    "EACCESS"
-  ],
-  "license": "ISC",
-  "devDependencies": {
-    "import-fresh": "^2.0.0",
-    "mkdirp": "^0.5.0",
-    "rimraf": "^2.2.8",
-    "tap": "^16.3.4"
-  },
-  "files": [
-    "fs.js",
-    "graceful-fs.js",
-    "legacy-streams.js",
-    "polyfills.js",
-    "clone.js"
-  ],
-  "tap": {
-    "reporter": "classic"
-  }
+    "name": "iconv-lite",
+    "description": "Convert character encodings in pure javascript.",
+    "version": "0.4.24",
+    "license": "MIT",
+    "keywords": [
+        "iconv",
+        "convert",
+        "charset",
+        "icu"
+    ],
+    "author": "Alexander Shtuchkin <ashtuchkin@gmail.com>",
+    "main": "./lib/index.js",
+    "typings": "./lib/index.d.ts",
+    "homepage": "https://github.com/ashtuchkin/iconv-lite",
+    "bugs": "https://github.com/ashtuchkin/iconv-lite/issues",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/ashtuchkin/iconv-lite.git"
+    },
+    "engines": {
+        "node": ">=0.10.0"
+    },
+    "scripts": {
+        "coverage": "istanbul cover _mocha -- --grep .",
+        "coverage-open": "open coverage/lcov-report/index.html",
+        "test": "mocha --reporter spec --grep ."
+    },
+    "browser": {
+        "./lib/extend-node": false,
+        "./lib/streams": false
+    },
+    "devDependencies": {
+        "mocha": "^3.1.0",
+        "request": "~2.87.0",
+        "unorm": "*",
+        "errto": "*",
+        "async": "*",
+        "istanbul": "*",
+        "semver": "*",
+        "iconv": "*"
+    },
+    "dependencies": {
+        "safer-buffer": ">= 2.1.2 < 3"
+    }
 }
